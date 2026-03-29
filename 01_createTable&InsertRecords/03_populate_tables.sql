@@ -13,7 +13,7 @@ INSERT INTO regions (region_id, region_name) VALUES (4, 'Middle East and Africa'
 
 INSERT INTO countries (country_id, country_name, region_id) VALUES ('IT', 'Italy', 1);
 INSERT INTO countries (country_id, country_name, region_id) VALUES ('JP', 'Japan', 3);
-INSERT INTO countries (country_id, country_name, region_id) VALUES ('US', 'United States of America', 2);
+INSERT INTO countries (country_id, country_name, regQion_id) VALUES ('US', 'United States of America', 2);
 INSERT INTO countries (country_id, country_name, region_id) VALUES ('CA', 'Canada', 2);
 INSERT INTO countries (country_id, country_name, region_id) VALUES ('CN', 'China', 3);
 INSERT INTO countries (country_id, country_name, region_id) VALUES ('IN', 'India', 3);
@@ -608,3 +608,34 @@ VALUES  (200, TO_DATE('01-07-2002', 'dd-MM-yyyy'), TO_DATE('31-12-2006', 'dd-MM-
 ALTER TABLE departments ENABLE CONSTRAINT dept_mgr_fk;
 
 COMMIT;
+
+
+--  CREATE TABLE OF ALLOWANCES 
+
+CREATE TABLE ALLOWANCES (
+    ALLOWANCE_ID NUMBER,
+    ALLOWANCE_AMOUNT NUMBER,
+    EFFECTIVE_DATE DATE,
+    DEPARTMENT_ID NUMBER
+);
+
+/*
+Corrected version
+If you want the ALLOWANCES table to store department-based allowances:
+
+*/
+
+INSERT INTO ALLOWANCES (ALLOWANCE_ID, ALLOWANCE_AMOUNT, EFFECTIVE_DATE, DEPARTMENT_ID)
+SELECT 
+    ROWNUM + 20,
+    CASE 
+        WHEN dept_id = 30 THEN 1000
+        WHEN dept_id = 60 THEN 1500
+        ELSE 500
+    END,
+    SYSDATE,
+    dept_id
+FROM (
+    SELECT DISTINCT DEPARTMENT_ID AS dept_id
+    FROM EMPLOYEES
+);
