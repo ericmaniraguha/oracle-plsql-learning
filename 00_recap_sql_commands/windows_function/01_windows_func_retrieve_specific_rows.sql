@@ -28,3 +28,16 @@ FROM ranked_employees
 WHERE 
     rn IN (1, 2, 5, 105, 150)   -- first two, 5th, 105th, 150th rows
     OR rn > total_rows - 10;    -- last 10 rows
+
+
+-- Alternative (simpler window-only logic)
+
+WITH ranked AS (
+    SELECT 
+        e.*,
+        ROW_NUMBER() OVER (ORDER BY employee_id DESC) AS rn
+    FROM employees e
+)
+SELECT *
+FROM ranked
+WHERE rn <= 10;
